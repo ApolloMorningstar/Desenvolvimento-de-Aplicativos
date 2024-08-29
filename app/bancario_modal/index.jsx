@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, Image, View, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react'
+import { StyleSheet, Text, Image, View, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 
 
 

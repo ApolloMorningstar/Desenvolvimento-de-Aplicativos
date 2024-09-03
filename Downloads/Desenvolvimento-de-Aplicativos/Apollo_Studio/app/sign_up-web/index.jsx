@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView, Image, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native';
+
+// Obtém a largura da tela
+const { width } = Dimensions.get('window');
 
 const SignUp = () => {
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
     const CapaSignUp = require('./pasta_de_imagens/img2.jpg')
-    
-    const { width } = useWindowDimensions(); // Usando useWindowDimensions para obter a largura da tela
 
     const limparCadastro = () => {
         setNome('')
@@ -43,14 +44,12 @@ const SignUp = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {width <= 600 && ( // Mostrar a imagem apenas em telas menores
-                <View style={styles.imageContainer}>
-                    <Image 
-                        style={styles.image} 
-                        source={CapaSignUp} 
-                    />
-                </View>
-            )}
+            <View style={styles.imageContainer}>
+                <Image 
+                    style={styles.image} 
+                    source={CapaSignUp} 
+                />
+            </View>
             <View style={styles.formContainer}>
                 <Text style={styles.Titulo}>Registrar</Text>
                 <Text style={styles.label}>Nome: </Text>
@@ -89,28 +88,31 @@ const SignUp = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: width > 600 ? 'row' : 'column',
+        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
         backgroundColor: '#2E3A59',
     },
     imageContainer: {
-        width: '100%',
-        marginBottom: 40, // Margem de 50px embaixo
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+        marginRight: width > 600 ? 50 : 0, 
     },
     image: {
-        width: '80%',
+        width: '100%',
         aspectRatio: 4 / 3,
         resizeMode: 'cover',
         borderRadius: 15,
+        marginLeft: 50,
     },
     formContainer: {
-        width: '100%',
+        flex: 1,
+        justifyContent: 'center',
         padding: 10,
-        marginTop: 10, 
-        alignItems: 'center',
+        marginLeft: width > 600 ? 10 : 0, 
+        marginRight: 50,
     },
     label: {
         fontSize: 18,
@@ -140,7 +142,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     input: {
-        width: 300,
         height: 40,
         borderColor: '#A7BBC7',
         borderWidth: 1,
@@ -153,8 +154,3 @@ const styles = StyleSheet.create({
 });
 
 export default SignUp;
-
-
-
-
-

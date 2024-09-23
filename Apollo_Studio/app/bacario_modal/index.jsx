@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, Text, Image, View, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+
 
 
 const App_Banco = () => {
     const Logo_deuses_gregos = require('../splash-screen/pasta de imagens/logo_deuses.png');
 
-    // const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [saldo, setSaldo] = useState(7320.92);
     const [valor, setValor] = useState('');
+    const [preSaldo, setPresaldo] = useState(0);
 
+   
+    const confirmaOperacao = () => {
+        setSaldo(preSaldo)
+        setModalVisible(false)
+    }
     const realizarSaque = () => {
+        setModalVisible(true)
         if (valor !== '') {
             const valorSaque = Number(valor);
             if (valorSaque > 0) {
                 const multa = saldo * 0.025;
-                const novoSaldo = saldo - valorSaque - multa;
-                setSaldo(novoSaldo > 0 ? novoSaldo : 0);
+                const novoSaldo = (saldo - valorSaque) - multa;
+                setPresaldo(novoSaldo > 0 ? novoSaldo : 0);
                 setValor(''); 
             } else {
                 alert('O valor do saque deve ser positivo.');
@@ -28,11 +35,12 @@ const App_Banco = () => {
     };
 
     const realizarDeposito = () => {
+        setModalVisible(true)
         if (valor !== '') {
             const valorDeposito = Number(valor);
             if (valorDeposito > 0) {
                 const bonus = valorDeposito * 0.01;
-                setSaldo(saldo + valorDeposito + bonus);
+                setPresaldo(saldo + valorDeposito + bonus);
                 setValor(''); 
             } else {
                 alert('O valor do depósito deve ser positivo.');
@@ -75,7 +83,24 @@ const App_Banco = () => {
                         <Text style={styles.buttonText}>Depositar</Text>
                     </TouchableOpacity>
                 </View>
+                <Modal animationType="fade" transparent={true} visible={modalVisible}>
+                 <View style={styles.modalView}>
+                     <Text style={styles.mensagem_de_saldo}>
+                        Tem certeza que deseja realizar esta operação?  {preSaldo.toFixed(2)}
+                     </Text>
+                     <Pressable
+                         style={[styles.button, styles.buttonClose]}
+                         onPress={() => confirmaOperacao()}>
+                         <Text style={styles.buttonText}>Confirmar Operação</Text>
+                     </Pressable>
+                 </View>
+             </Modal>
+             <Pressable style={[styles.button, styles.buttonOpen]}
+                 onPress={() => setModalVisible(true)}>
+                 <Text style={styles.buttonText}>Mostrar Modal</Text>
+             </Pressable>
             </View>
+           
         </View>
     );
 }
@@ -145,7 +170,26 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
-    }
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+        marginTop: 20, 
+    },
+    buttonClose: {
+        backgroundColor: '#F194FF',
+    },
 });
 
 export default App_Banco;

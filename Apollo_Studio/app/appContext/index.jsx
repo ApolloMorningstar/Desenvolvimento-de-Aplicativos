@@ -1,62 +1,33 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, Button, Image, TouchableOpacity } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
+import { Link } from "react-router-native";
+import { CarrinhoContext } from "../../scripts/appContext"; 
 
-const App = () => {
-  const [tarefas, setTarefas] = useState([
-    { id: '1', title: 'Hambúrguer', completed: false, image: require('../appContext/pasta imagens/hamburguer.png') },
-    { id: '2', title: 'Pizza', completed: false, image: require('../appContext/pasta imagens/pizza.png') },
-    { id: '3', title: 'Hot Dog', completed: false, image: require('../appContext/pasta imagens/hotdog.png') },
-    { id: '4', title: 'Açaí', completed: false, image: require('../appContext/pasta imagens/acai.png') },
-  ]);
+const produtos = [
+  { id: '1', title: 'Hambúrguer', valor: 20.00 },
+  { id: '2', title: 'Pizza', valor: 45.00 },
+  { id: '3', title: 'Hot Dog', valor: 15.00 },
+  { id: '4', title: 'Açaí', valor: 30.00 },
+];
 
-  const marcarConcluida = (id) => {
-    setTarefas(tarefas.map(tarefa => {
-      if (tarefa.id === id) {
-        return { ...tarefa, completed: true };
-      } else {
-        return tarefa;
-      }
-    }));
-  };
-  
-  const marcarPendente = (id) => {
-    setTarefas(tarefas.map(tarefa => {
-      if (tarefa.id === id) {
-        return { ...tarefa, completed: false };
-      } else {
-        return tarefa;
-      }
-    }));
-  };
+const Home = () => {
+  const { adicionarAoCarrinho, carrinho } = useContext(CarrinhoContext);
 
-  const renderizarTarefa = ({ item }) => {
-    return (
-      <View style={styles.itemContainer}>
-        <Image source={item.image} style={styles.image} />
-        <Text style={[styles.itemText, item.completed && styles.completedText]}>
-          {item.title}
-        </Text>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity 
-            style={[styles.button, styles.completedButton]} 
-            onPress={() => marcarConcluida(item.id)}
-          >
-            <Text style={styles.buttonText}>Concluído</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.button, styles.pendingButton]} 
-            onPress={() => marcarPendente(item.id)}
-          >
-            <Text style={styles.buttonText}>Pendente</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Image source={item.image} style={styles.image} />
+      <Text style={styles.itemText}>{item.title} - R$ {item.valor.toFixed(2)}</Text>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => adicionarAoCarrinho(item)}
+      >
+        <Text style={styles.buttonText}>Adicionar ao Carrinho</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.iconButton}>
           <Image
@@ -64,20 +35,30 @@ const App = () => {
             style={styles.icon}
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>iFome doppelganger</Text>
+        <Text style={styles.headerTitle}>iFome Doppelganger</Text>
         <TouchableOpacity style={styles.iconButton}>
-          <Image
-            source={require('../appContext/pasta imagens/cart.png')}
-            style={styles.icon}
-          />
+          <Link to="/carrinho">
+            <Image
+              source={require('../appContext/pasta imagens/cart.png')}
+              style={styles.icon}
+            />
+          </Link>
         </TouchableOpacity>
       </View>
 
+      {/* Qtd de Itens no Carrinho */}
+      <Text style={styles.cartText}>Itens no Carrinho: {carrinho.length}</Text>
+
+      {/* Lista de Produtos */}
       <FlatList
-        data={tarefas}
-        renderItem={renderizarTarefa}
+        data={produtos}
+        renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+
+      <Link to="/carrinho" style={styles.carrinhoLink}>
+        <Text style={styles.carrinhoText}>Ir para o Carrinho</Text>
+      </Link>
     </View>
   );
 };
@@ -85,81 +66,57 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    padding: 10,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#EA1D2C',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   iconButton: {
     padding: 10,
   },
   icon: {
-    width: 24,
-    height: 24,
-    tintColor: '#FFFFFF',
+    width: 30,
+    height: 30,
+  },
+  cartText: {
+    fontSize: 16,
+    marginVertical: 10,
   },
   itemContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    alignItems: 'center',
+    marginBottom: 15,
+  },
+  image: {
+    width: 100,
+    height: 100,
   },
   itemText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginVertical: 10,
   },
-  completedText: {
-    textDecorationLine: 'line-through',
-    color: '#888',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+  addButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
     marginTop: 10,
   },
-  button: {
-    flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 10,
-    borderRadius: 25,
-  },
-  completedButton: {
-    backgroundColor: '#4CAF50',
-  },
-  pendingButton: {
-    backgroundColor: '#F44336',
-  },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold',
   },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
+  carrinhoLink: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  carrinhoText: {
+    fontSize: 18,
+    color: '#007BFF',
   },
 });
 
-export default App;
+export default Home;

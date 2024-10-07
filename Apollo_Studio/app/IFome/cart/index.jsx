@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import { CarrinhoContext } from "../../scripts/appContext";
+import { AppContext } from "../../../scripts/AppContext";
 
 const Carrinho = () => {
-  const { carrinho, removerDoCarrinho } = useContext(CarrinhoContext);
+  const { carrinho, removerDoCarrinho } = useContext(AppContext);
 
   const calcularTotal = () => {
     return carrinho.reduce((total, item) => total + item.valor, 0).toFixed(2);

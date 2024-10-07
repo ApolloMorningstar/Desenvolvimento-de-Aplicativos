@@ -1,17 +1,17 @@
 import React, { useContext } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
-import { Link } from "react-router-native";
-import { CarrinhoContext } from "../../scripts/appContext"; 
+import { Link } from "expo-router";
+import { AppContext } from "../../../scripts/AppContext";
 
 const produtos = [
-  { id: '1', title: 'Hambúrguer', valor: 20.00 },
-  { id: '2', title: 'Pizza', valor: 45.00 },
-  { id: '3', title: 'Hot Dog', valor: 15.00 },
-  { id: '4', title: 'Açaí', valor: 30.00 },
+  { id: '1', title: 'Hambúrguer', valor: 20.00, image: require('../Home/pasta imagens/hamburguer.png') },
+  { id: '2', title: 'Pizza', valor: 45.00, image: require('../Home/pasta imagens/pizza.png')},
+  { id: '3', title: 'Hot Dog', valor: 15.00, image: require('../Home/pasta imagens/hotdog.png') },
+  { id: '4', title: 'Açaí', valor: 30.00, image: require('../Home/pasta imagens/acai.png') },
 ];
 
 const Home = () => {
-  const { adicionarAoCarrinho, carrinho } = useContext(CarrinhoContext);
+  const { adicionarAoCarrinho, carrinho } = useContext(AppContext);
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
@@ -31,7 +31,7 @@ const Home = () => {
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.iconButton}>
           <Image
-            source={require('../appContext/pasta imagens/menu.png')}
+            source={require('../Home/pasta imagens/menu.png')}
             style={styles.icon}
           />
         </TouchableOpacity>
@@ -39,7 +39,7 @@ const Home = () => {
         <TouchableOpacity style={styles.iconButton}>
           <Link to="/carrinho">
             <Image
-              source={require('../appContext/pasta imagens/cart.png')}
+              source={require('../Home/pasta imagens/cart.png')}
               style={styles.icon}
             />
           </Link>
